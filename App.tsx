@@ -1,11 +1,24 @@
-import { StatusBar } from 'expo-status-bar'
-import { Text, View } from 'react-native'
+import { Text } from 'react-native'
+import {
+  useFonts,
+  Archivo_700Bold,
+  Archivo_400Regular,
+  Archivo_200ExtraLight,
+  Archivo_300Light,
+  Archivo_500Medium,
+} from '@expo-google-fonts/archivo'
+
+import { Bootstrap } from './src/modules/app/bootstrap'
 
 export default function App() {
-  return (
-    <View className="flex-1 items-center justify-center bg-white">
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  )
+  const [loadingFonts] = useFonts({
+    Archivo_700Bold,
+    Archivo_400Regular,
+    Archivo_200ExtraLight,
+    Archivo_300Light,
+    Archivo_500Medium,
+  })
+
+  if (!loadingFonts) return <Text>loading</Text>
+  return <Bootstrap />
 }
