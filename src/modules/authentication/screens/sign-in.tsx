@@ -5,11 +5,16 @@ import { Typography } from '../../app/components'
 import { Input } from '../../app/components/input'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { api } from '../../app/infra'
 
 export function SignIn() {
   const theme = useTheme()
 
   const refKeyboardAwareScrollView = useRef<KeyboardAwareScrollView>(null)
+  const teste = async () => {
+    const { data } = await api.post('/sign-in')
+    console.log(data)
+  }
 
   return (
     <SafeAreaView
@@ -35,16 +40,16 @@ export function SignIn() {
             alignItems="center"
           >
             <Typography variant="title" mt={6} color={theme.colors.black}>
-              Seja bem-vindo
+              Welcome
             </Typography>
             <Typography mt={1} color={theme.colors.black} textAlign="center">
-              Faça o seu login usando o seu e-mail ou usuário
+              Log in using your email or username
             </Typography>
 
             <VStack mt={6} w="100%" space={4}>
               <Input
-                placeholder="Nome do usuário"
-                label="Usuário"
+                placeholder="Type your e-mail"
+                label="E-mail"
                 InputLeftElement={
                   <Icon
                     as={<Feather name="user" />}
@@ -55,7 +60,7 @@ export function SignIn() {
                 }
               />
               <Input
-                placeholder="Digite sua senha"
+                placeholder="Type your password"
                 label="Senha"
                 InputLeftElement={
                   <Icon
@@ -75,10 +80,12 @@ export function SignIn() {
                 }
               />
 
-              <Button background={theme.colors.christfy[600]}>Entrar</Button>
+              <Button onPress={teste} background={theme.colors.christfy[600]}>
+                Enter
+              </Button>
             </VStack>
           </Container>
-          <Typography alignSelf={'center'}>Ficou com dúvida? Ajuda</Typography>
+          <Typography alignSelf={'center'}>Have any doubts? Help</Typography>
         </Center>
       </KeyboardAwareScrollView>
     </SafeAreaView>
