@@ -1,11 +1,13 @@
 import { SignIn } from '../authentication/screens/sign-in'
-import { ReactNativeBaseProvider } from './infra/providers/native-base-provider'
+import { ReactQueryProvider, ReactNativeBaseProvider } from './infra'
 
 export function Bootstrap() {
   return (
     <>
       <ReactNativeBaseProvider>
-        <SignIn />
+        <ReactQueryProvider>
+          <SignIn />
+        </ReactQueryProvider>
       </ReactNativeBaseProvider>
     </>
   )

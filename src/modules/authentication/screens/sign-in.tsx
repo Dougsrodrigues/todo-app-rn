@@ -5,16 +5,29 @@ import { Typography } from '../../app/components'
 import { Input } from '../../app/components/input'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { api } from '../../app/infra'
+import { useForm, Controller } from 'react-hook-form'
+import { useSignIn } from '../hooks/useSignIn'
+import { SignInSchemaData } from '../utils'
+import { signInSchema } from '../utils/schemas'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 export function SignIn() {
   const theme = useTheme()
+  const { handleSignIn } = useSignIn()
 
   const refKeyboardAwareScrollView = useRef<KeyboardAwareScrollView>(null)
-  const teste = async () => {
-    const { data } = await api.post('/sign-in')
-    console.log(data)
-  }
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignInSchemaData>({
+    resolver: zodResolver(signInSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  })
 
   return (
     <SafeAreaView
@@ -47,40 +60,70 @@ export function SignIn() {
             </Typography>
 
             <VStack mt={6} w="100%" space={4}>
-              <Input
-                placeholder="Type your e-mail"
-                label="E-mail"
-                InputLeftElement={
-                  <Icon
-                    as={<Feather name="user" />}
-                    size={5}
-                    ml="2"
-                    color="muted.500"
+              <Controller
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <Input
+                    error={errors?.email && errors.email.message}
+                    placeholder="Type your e-mail"
+                    label="E-mail"
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    value={value}
+                    InputLeftElement={
+                      <Icon
+                        as={<Feather name="user" />}
+                        size={5}
+                        ml="2"
+                        color="muted.500"
+                      />
+                    }
                   />
-                }
-              />
-              <Input
-                placeholder="Type your password"
-                label="Senha"
-                InputLeftElement={
-                  <Icon
-                    as={<Feather name="lock" />}
-                    size={5}
-                    ml="2"
-                    color="muted.500"
-                  />
-                }
-                InputRightElement={
-                  <Icon
-                    as={<Feather name="eye-off" />}
-                    size={5}
-                    mr="2"
-                    color="muted.500"
-                  />
-                }
+                )}
+                name="email"
               />
 
-              <Button onPress={teste} background={theme.colors.christfy[600]}>
+              <Controller
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <Input
+                    value={value}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    placeholder="Type your password"
+                    label="Senha"
+                    error={errors?.password && errors.password.message}
+                    InputLeftElement={
+                      <Icon
+                        as={<Feather name="lock" />}
+                        size={5}
+                        ml="2"
+                        color="muted.500"
+                      />
+                    }
+                    InputRightElement={
+                      <Icon
+                        as={<Feather name="eye-off" />}
+                        size={5}
+                        mr="2"
+                        color="muted.500"
+                      />
+                    }
+                  />
+                )}
+                name="password"
+              />
+
+              <Button
+                onPress={handleSubmit(handleSignIn)}
+                background={theme.colors.christfy[600]}
+              >
                 Enter
               </Button>
             </VStack>
