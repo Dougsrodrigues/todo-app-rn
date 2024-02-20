@@ -6,27 +6,24 @@ import { Input } from '../../app/components/input'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { useForm, Controller } from 'react-hook-form'
-import { useSignIn } from '../hooks/useSignIn'
+import { useSignIn } from '../hooks/use-sign-in'
 import { SignInSchemaData } from '../utils'
 import { signInSchema } from '../utils/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 export function SignIn() {
   const theme = useTheme()
-  const { handleSignIn } = useSignIn()
+  const { handleSignIn, isLoading, showPassword, handleShowPassword } =
+    useSignIn()
 
   const refKeyboardAwareScrollView = useRef<KeyboardAwareScrollView>(null)
 
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<SignInSchemaData>({
     resolver: zodResolver(signInSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
   })
 
   return (
@@ -70,9 +67,11 @@ export function SignIn() {
                     error={errors?.email && errors.email.message}
                     placeholder="Type your e-mail"
                     label="E-mail"
-                    onChange={onChange}
+                    onChangeText={onChange}
                     onBlur={onBlur}
                     value={value}
+                    autoComplete="off"
+                    autoCapitalize="none"
                     InputLeftElement={
                       <Icon
                         as={<Feather name="user" />}
@@ -93,8 +92,9 @@ export function SignIn() {
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <Input
+                    type={showPassword ? 'text' : 'password'}
                     value={value}
-                    onChange={onChange}
+                    onChangeText={onChange}
                     onBlur={onBlur}
                     placeholder="Type your password"
                     label="Senha"
@@ -109,7 +109,8 @@ export function SignIn() {
                     }
                     InputRightElement={
                       <Icon
-                        as={<Feather name="eye-off" />}
+                        onPress={handleShowPassword}
+                        as={<Feather name={showPassword ? 'eye' : 'eye-off'} />}
                         size={5}
                         mr="2"
                         color="muted.500"
@@ -121,6 +122,8 @@ export function SignIn() {
               />
 
               <Button
+                isDisabled={isSubmitting || isLoading}
+                isLoading={isSubmitting || isLoading}
                 onPress={handleSubmit(handleSignIn)}
                 background={theme.colors.christfy[600]}
               >

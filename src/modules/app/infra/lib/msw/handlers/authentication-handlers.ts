@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 import { faker } from '@faker-js/faker'
 
-const authState = {
+export const authState = {
   isAuthenticated: false,
   user: '',
   token: '',
@@ -9,12 +9,26 @@ const authState = {
 
 export const signInHandler = rest.post(
   `${process.env.EXPO_PUBLIC_API_URL}/sign-in`,
-  (req, res, ctx) => {
+  async (req, res, ctx) => {
+    const { email, password } = await req.json()
+
+    if (!email || !password) {
+      return res(
+        ctx.delay(1000),
+        ctx.status(403),
+        ctx.json({
+          message: 'User signed in',
+          user: null,
+        }),
+      )
+    }
+
     authState.isAuthenticated = true
     authState.user = faker.person.firstName()
     authState.token = faker.string.alphanumeric({ length: 16 })
 
     return res(
+      ctx.delay(1000),
       ctx.status(200),
 
       ctx.json({
@@ -25,10 +39,9 @@ export const signInHandler = rest.post(
   },
 )
 
-export const chato = rest.post(
-  'http://192.168.1.9:8081/symbolicate',
-  (_, res, ctx) => {
+export const authenticationHandlers = [
+  signInHandler,
+  rest.post('http://192.168.1.9:8081/symbolicate', (_, res, ctx) => {
     return res(ctx.status(200))
-  },
-)
-export const authenticationHandlers = [signInHandler, chato]
+  }),
+]
