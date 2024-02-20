@@ -1,8 +1,7 @@
 import React, { useRef } from 'react'
 import { Button, Center, Container, Icon, VStack, useTheme } from 'native-base'
 import { Feather } from '@expo/vector-icons'
-import { Typography } from '../../app/components'
-import { Input } from '../../app/components/input'
+import { Typography } from '@/modules/app/components'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { useForm, Controller } from 'react-hook-form'
@@ -10,6 +9,7 @@ import { useSignIn } from '../hooks/use-sign-in'
 import { SignInSchemaData } from '../utils'
 import { signInSchema } from '../utils/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Input } from '@/modules/app/components/input'
 
 export function SignIn() {
   const theme = useTheme()
@@ -53,7 +53,7 @@ export function SignIn() {
               Welcome
             </Typography>
             <Typography mt={1} color={theme.colors.black} textAlign="center">
-              Log in using your email or username
+              Log in using your email and password
             </Typography>
 
             <VStack mt={6} w="100%" space={4}>
@@ -128,6 +128,9 @@ export function SignIn() {
                 background={theme.colors.christfy[600]}
               >
                 Enter
+              </Button>
+              <Button variant="ghost" color={theme.colors.christfy[500]}>
+                Sign Up
               </Button>
             </VStack>
           </Container>

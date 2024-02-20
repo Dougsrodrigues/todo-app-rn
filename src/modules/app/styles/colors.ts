@@ -1,8 +1,8 @@
 export const colors = {
   christfy: {
     600: '#03918C',
+    500: '#04B8B2',
   },
-  black: '#171717',
   gray: {
     100: '#737373',
   },
